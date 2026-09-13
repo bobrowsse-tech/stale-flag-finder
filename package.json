@@ -99,5 +99,10 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/bobrowsse-tech/stale-flag-finder"
+  },
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#B45309",
+    "theme": "dark"
   }
 }
