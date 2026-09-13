@@ -104,5 +104,17 @@
   "galleryBanner": {
     "color": "#B45309",
     "theme": "dark"
+  },
+  "keywords": [
+    "feature-flags",
+    "launchdarkly",
+    "unleash",
+    "stale",
+    "cleanup",
+    "tech-debt"
+  ],
+  "homepage": "https://github.com/bobrowsse-tech/stale-flag-finder#readme",
+  "bugs": {
+    "url": "https://github.com/bobrowsse-tech/stale-flag-finder/issues"
   }
 }
