@@ -1,27 +1,48 @@
 import * as vscode from 'vscode';
+import type { StaleFlagService, StaleReport, SyncOptions } from './service';
+import type { DashboardProvider } from './dashboardProvider';
 
-// Language Model Tool registration — makes this extension's core capability
-// callable by Copilot Chat, Claude Code, or any other agent that supports
-// VS Code's Language Model Tool API. The `name` here MUST match the `name`
-// field of the languageModelTools entry in package.json.
-//
-// Docs: https://code.visualstudio.com/api/extension-guides/ai/tools
+interface ToolInput {
+  minDaysAtTerminal?: number;
+}
 
-export function registerFindStaleFlagsTool(context: vscode.ExtensionContext) {
+/**
+ * Report-only LM tool — never runs the removal codemod.
+ */
+export function registerFindStaleFlagsTool(
+  context: vscode.ExtensionContext,
+  getService: () => StaleFlagService | undefined,
+  getSyncOptions: (minDays?: number) => Promise<SyncOptions>,
+  setReport: (report: StaleReport) => void,
+  dashboard: DashboardProvider
+) {
   context.subscriptions.push(
-    vscode.lm.registerTool("find_stale_flags", {
+    vscode.lm.registerTool('find_stale_flags', {
       async invoke(
-        options: vscode.LanguageModelToolInvocationOptions<any>,
+        options: vscode.LanguageModelToolInvocationOptions<ToolInput>,
         _token: vscode.CancellationToken
       ) {
-        // TODO: implement using the same core logic the dashboard buttons
-        // call — do not duplicate; both entry points should call one
-        // shared service module (see DIRECTIVE.md, "Implementation phases").
-        const result = "find_stale_flags is not yet implemented \u2014 see DIRECTIVE.md";
-        return new vscode.LanguageModelToolResult([
-          new vscode.LanguageModelTextPart(result),
-        ]);
+        const service = getService();
+        if (!service) {
+          return textResult('No workspace folder is open.');
+        }
+        const minDays = options.input?.minDaysAtTerminal;
+        const syncOpts = await getSyncOptions(minDays);
+        try {
+          const report = await service.sync(syncOpts);
+          setReport(report);
+          dashboard.showReport(report);
+          dashboard.setSummary(`${report.flags.length} stale candidate(s)`);
+          return textResult(service.formatReport(report));
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          return textResult(`Flag sync failed: ${msg}`);
+        }
       },
     })
   );
+}
+
+function textResult(text: string): vscode.LanguageModelToolResult {
+  return new vscode.LanguageModelToolResult([new vscode.LanguageModelTextPart(text)]);
 }
