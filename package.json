@@ -1,0 +1,105 @@
+{
+  "name": "stale-flag-finder",
+  "displayName": "Stale Feature-Flag Finder",
+  "description": "Cross-references your flag provider's rollout data against actual code usage to find flags safe to delete.",
+  "version": "0.1.0",
+  "publisher": "bobrowsse-tech",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "stale-flag-finderContainer",
+          "title": "Stale Feature-Flag Finder",
+          "icon": "$(flag)"
+        }
+      ]
+    },
+    "views": {
+      "stale-flag-finderContainer": [
+        {
+          "id": "stale-flag-finderView",
+          "name": "Dashboard",
+          "type": "webview"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "staleFlags.configureProvider",
+        "title": "Stale Feature-Flag Finder: Configure Provider"
+      },
+      {
+        "command": "staleFlags.sync",
+        "title": "Stale Feature-Flag Finder: Sync Flags"
+      },
+      {
+        "command": "staleFlags.viewList",
+        "title": "Stale Feature-Flag Finder: View Stale List"
+      },
+      {
+        "command": "staleFlags.generateRemovalPr",
+        "title": "Stale Feature-Flag Finder: Generate Removal PR"
+      }
+    ],
+    "languageModelTools": [
+      {
+        "name": "find_stale_flags",
+        "tags": [
+          "stale-flag-finder"
+        ],
+        "toolReferenceName": "find_stale_flags",
+        "displayName": "Stale Feature-Flag Finder — find_stale_flags",
+        "modelDescription": "Lists feature flags that have been at a terminal rollout state for a long time but still have live conditional code in the repo, as candidates for removal. Use this when the user asks about cleaning up feature flags or tech debt from flags.",
+        "canBeReferencedInPrompt": true,
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "minDaysAtTerminal": {
+              "type": "number",
+              "description": "Minimum days a flag must have been at 0% or 100% rollout to be reported. Defaults to 30."
+            }
+          }
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "npm run check-types && node esbuild.js",
+    "check-types": "tsc --noEmit",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "vscode:prepublish": "npm run package",
+    "package": "npm run check-types && node esbuild.js --production",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.95.0",
+    "@types/node": "^20.0.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.0",
+    "esbuild": "^0.24.0",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.6.0"
+  },
+  "dependencies": {
+    "ts-morph": "latest",
+    "launchdarkly-node-server-sdk": "latest",
+    "unleash-client": "latest",
+    "jscodeshift": "latest",
+    "simple-git": "latest"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bobrowsse-tech/stale-flag-finder"
+  }
+}
