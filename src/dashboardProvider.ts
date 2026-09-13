@@ -14,7 +14,7 @@ export class DashboardProvider implements vscode.WebviewViewProvider {
   private report?: StaleReport;
   private selectHandler?: (key: string) => void;
 
-  constructor(private readonly extensionUri: vscode.Uri) {}
+  constructor() {}
 
   onSelectFlag(handler: (key: string) => void) {
     this.selectHandler = handler;

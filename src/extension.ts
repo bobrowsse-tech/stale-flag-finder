@@ -27,7 +27,7 @@ function createService(): StaleFlagService | undefined {
 }
 
 export function activate(context: vscode.ExtensionContext) {
-  const dashboard = new DashboardProvider(context.extensionUri);
+  const dashboard = new DashboardProvider();
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider('stale-flag-finderView', dashboard)
   );

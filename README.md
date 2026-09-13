@@ -1,23 +1,40 @@
-# Stale Feature-Flag Finder
+# Stale Flag Finder
 
-Finds feature flags that are safe to remove by joining your flag provider’s rollout data with real call sites in the repo.
+Finds feature flags that are fully rolled out, orphaned in code, or otherwise safe to remove — then previews a removal diff before you apply it.
 
-1. **Configure Provider** — LaunchDarkly or Unleash; API token goes in VS Code SecretStorage only.
-2. **Sync Flags** — pulls metadata and AST-scans the workspace for `variation` / `isEnabled`-style checks.
-3. **View Stale List** — ranked list (orphaned code first, then long-terminal rollouts).
-4. **Generate Removal PR** — shows a diff preview; writes files only after you confirm (or mark a kill-switch permanent via `.stale-flags-permanent`).
-
-Agents can call `find_stale_flags` for a report-only ranking — never an automatic rewrite.
-
-## Development
+## Install
 
 ```bash
+git clone https://github.com/bobrowsse-tech/stale-flag-finder.git
+cd stale-flag-finder
 npm install
-npm run watch
-npm run test:unit
+npm run package
+npx @vscode/vsce package --no-dependencies
+code --install-extension stale-flag-finder-0.1.0.vsix
 ```
 
-Press `F5` in VS Code to launch an Extension Development Host.
+Or press **F5** after `npm install`.
+
+## Use
+
+| Action | What it does |
+|---|---|
+| **Configure Provider** | LaunchDarkly or Unleash (API token → SecretStorage) |
+| **Sync Flags** | Joins provider metadata with a ts-morph usage scan |
+| **Preview / Apply Removal** | Diff-before-apply rewrite of the surviving branch |
+| **Mark Permanent** | Adds to `.stale-flags-permanent` so it stays ignored |
+
+Agents can call `find_stale_flags` (report-only). Removals require an explicit dashboard click.
+
+## How it’s built
+
+TypeScript + esbuild + `ts-morph`; provider clients use REST + `fetch` (tokens never in settings files).
+
+```bash
+npm run watch
+npm run test:unit
+npm run package
+```
 
 ## License
 
