@@ -2,8 +2,13 @@
   "name": "stale-flag-finder",
   "displayName": "Stale Feature-Flag Finder",
   "description": "Cross-references your flag provider's rollout data against actual code usage to find flags safe to delete.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "bobrowsse-tech",
+  "author": {
+    "name": "Bob Rowsse Walakira",
+    "email": "hello@bobrowsse.com",
+    "url": "https://bobrowsse.com"
+  },
   "engines": {
     "vscode": "^1.95.0"
   },
@@ -115,6 +120,7 @@
   ],
   "homepage": "https://github.com/bobrowsse-tech/stale-flag-finder#readme",
   "bugs": {
-    "url": "https://github.com/bobrowsse-tech/stale-flag-finder/issues"
+    "url": "https://github.com/bobrowsse-tech/stale-flag-finder/issues",
+    "email": "hello@bobrowsse.com"
   }
 }
